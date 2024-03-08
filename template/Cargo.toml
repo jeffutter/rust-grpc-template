@@ -1,0 +1,31 @@
+[package]
+name = "{{project-name}}"
+version = "0.1.0"
+edition = "2021"
+description = "{{project-description}}"
+repository = "https://github.com/{{gh-username}}/{{project-name}}"
+license = "MIT OR Apache-2.0"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+async-trait = "0.1.77"
+clap = { version = "4.5.0", features = ["derive", "env"] }
+futures = "0.3.30"
+mimalloc = { version = "0.1.39" }
+prost = "0.12"
+tokio = { version = "1", features = ["rt-multi-thread", "macros"] }
+tonic = { version = "0.11", features = ["gzip", "zstd", "transport", "prost", "codegen"] }
+tonic-health = "0.11.0"
+tonic-reflection = "0.11.0"
+tower = { version = "0.4.13", features = ["timeout", "limit", "load-shed"] }
+tracing = { version = "0.1.40", features = ["release_max_level_info"] }
+tracing-forest = { version = "0.1.6", features = ["chrono", "ansi", "tokio", "smallvec"] }
+tracing-subscriber = { version = "0.3.18", features = ["env-filter"] }
+
+[build-dependencies]
+tonic-build = "0.11"
+
+[profile.release]
+lto = true
+codegen-units = 1

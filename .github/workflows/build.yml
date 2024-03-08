@@ -1,0 +1,35 @@
+name: Build Template
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    env:
+      PROJECT_NAME: rust-grpc-template
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Run cargo generate
+        uses: cargo-generate/cargo-generate-action@v0.18.5
+        with:
+          name: ${{ env.PROJECT_NAME }}
+          template: template
+          arguments: "--template-values-file .github/workflows/template_values.toml --verbose"
+      - name: Install Protoc
+        uses: arduino/setup-protoc@v3
+        with:
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Install Rust toolchain
+        uses: dtolnay/rust-toolchain@stable
+      - name: Cargo check
+        # we need to move the generated project to a temp folder, away from the template project
+        # otherwise `cargo` runs would fail
+        # see https://github.com/rust-lang/cargo/issues/9922
+        run: |
+          mv $PROJECT_NAME ${{ runner.temp }}/
+          cd ${{ runner.temp }}/$PROJECT_NAME
+          cargo check --tests
