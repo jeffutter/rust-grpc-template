@@ -9,9 +9,12 @@ on:
       - '**/Cargo.toml'
       - '**/Cargo.lock'
   pull_request:
-{% raw  %}
+{% raw %}
 jobs:
   audit:
+    permissions:
+      issues: write
+      checks: write
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -20,7 +23,7 @@ jobs:
       - name: Install Rust toolchain
         uses: dtolnay/rust-toolchain@stable
       - uses: Swatinem/rust-cache@v2
-      - uses: actions-rs/audit-check@v1
+      - uses: rustsec/audit-check@v2.0.0
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-{% endraw  %}
+{% endraw %}
